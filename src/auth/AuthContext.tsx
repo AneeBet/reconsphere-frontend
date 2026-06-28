@@ -1,221 +1,141 @@
 import {
+    createContext,
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
 
-createContext,
-
-useEffect,
-
-useMemo,
-
-useState,
-
-ReactNode
-
+import type {
+    ReactNode,
 } from "react";
 
 import {
-
-login,
-
-me
-
+    login,
+    me,
 } from "../services/authService";
 
-import {
-
-LoginRequest,
-
-CurrentUser
-
+import type {
+    LoginRequest,
+    CurrentUser,
 } from "../types/auth";
 
 import {
-
-TokenStorage
-
+    TokenStorage,
 } from "../utils/tokenStorage";
 
-type AuthContextType={
+type AuthContextType = {
 
-user:CurrentUser|null;
+    user: CurrentUser | null;
 
-loading:boolean;
+    loading: boolean;
 
-isAuthenticated:boolean;
+    isAuthenticated: boolean;
 
-login:(request:LoginRequest)=>Promise<void>;
+    login: (request: LoginRequest) => Promise<void>;
 
-logout:()=>void;
+    logout: () => void;
 
 };
 
-export const AuthContext=
-
-createContext<AuthContextType>(
-
-{} as AuthContextType
-
+export const AuthContext = createContext<AuthContextType>(
+    {} as AuthContextType
 );
 
-export function AuthProvider(
+interface AuthProviderProps {
 
-{
-
-children
-
-}:{
-
-children:ReactNode
+    children: ReactNode;
 
 }
 
-){
+export function AuthProvider({
 
-const[
+    children,
 
-user,
+}: AuthProviderProps) {
 
-setUser
+    const [user, setUser] = useState<CurrentUser | null>(null);
 
-]=useState<CurrentUser|null>(
+    const [loading, setLoading] = useState(true);
 
-null
+    useEffect(() => {
 
-);
+        void restore();
 
-const[
+    }, []);
 
-loading,
+    async function restore() {
 
-setLoading
+        const token = TokenStorage.access();
 
-]=useState(true);
+        if (!token) {
 
-useEffect(()=>{
+            setLoading(false);
 
-restore();
+            return;
 
-},[]);
+        }
 
-async function restore(){
+        try {
 
-const token=
+            const current = await me();
 
-TokenStorage.access();
+            setUser(current);
 
-if(!token){
+        } catch {
 
-setLoading(false);
+            TokenStorage.clear();
 
-return;
+        } finally {
 
-}
+            setLoading(false);
 
-try{
+        }
 
-const current=
+    }
 
-await me();
+    async function loginUser(
+        request: LoginRequest,
+    ) {
 
-setUser(current);
+        const tokens = await login(request);
 
-}catch{
+        TokenStorage.set(
+            tokens.access_token,
+            tokens.refresh_token,
+        );
 
-TokenStorage.clear();
+        const current = await me();
 
-}
+        setUser(current);
 
-finally{
+    }
 
-setLoading(false);
+    function logout() {
 
-}
+        TokenStorage.clear();
 
-}
+        setUser(null);
 
-async function loginUser(
+    }
 
-request:LoginRequest
+    const value = useMemo(
+        () => ({
+            user,
+            loading,
+            logout,
+            isAuthenticated: !!user,
+            login: loginUser,
+        }),
+        [
+            user,
+            loading,
+        ],
+    );
 
-){
-
-const tokens=
-
-await login(
-
-request
-
-);
-
-TokenStorage.set(
-
-tokens.access_token,
-
-tokens.refresh_token
-
-);
-
-const current=
-
-await me();
-
-setUser(
-
-current
-
-);
-
-}
-
-function logout(){
-
-TokenStorage.clear();
-
-setUser(null);
-
-}
-
-const value=
-
-useMemo(
-
-()=>({
-
-user,
-
-loading,
-
-logout,
-
-isAuthenticated:
-
-!!user,
-
-login:loginUser
-
-}),
-
-[
-
-user,
-
-loading
-
-]
-
-);
-
-return(
-
-<AuthContext.Provider
-
-value={value}
-
->
-
-{children}
-
-</AuthContext.Provider>
-
-);
+    return (
+        <AuthContext.Provider value={value}>
+            {children}
+        </AuthContext.Provider>
+    );
 
 }

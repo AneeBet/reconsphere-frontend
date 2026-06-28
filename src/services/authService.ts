@@ -1,45 +1,28 @@
 import api from "../api/client";
 
-import {
-
-LoginRequest,
-
-LoginResponse,
-
-CurrentUser
-
+import type {
+    LoginRequest,
+    LoginResponse,
+    CurrentUser,
 } from "../types/auth";
 
 export async function login(
+    request: LoginRequest,
+): Promise<LoginResponse> {
 
-request:LoginRequest
+    const response = await api.post<LoginResponse>(
+        "/auth/login",
+        request,
+    );
 
-){
-
-const response=
-
-await api.post<LoginResponse>(
-
-"/auth/login",
-
-request
-
-);
-
-return response.data;
-
+    return response.data;
 }
 
-export async function me(){
+export async function me(): Promise<CurrentUser> {
 
-const response=
+    const response = await api.get<CurrentUser>(
+        "/auth/me",
+    );
 
-await api.get<CurrentUser>(
-
-"/auth/me"
-
-);
-
-return response.data;
-
+    return response.data;
 }

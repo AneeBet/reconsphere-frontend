@@ -1,75 +1,75 @@
 import api from "../api/client";
 
-export interface DashboardSummary{
+import type{
 
-totalFiles:number;
+DashboardSummary,
 
-totalTransactions:number;
+RecentRun,
 
-matchedTransactions:number;
+BankSummary,
 
-exceptionTransactions:number;
+ExceptionChart
 
-matchingRate:number;
+}from"../types/dashboard";
 
-}
+const DashboardService={
 
-export interface ReconciliationRun{
+async summary():Promise<DashboardSummary>{
 
-id:string;
+const response=
 
-startedAt:string;
-
-completedAt:string;
-
-status:string;
-
-matched:number;
-
-exceptions:number;
-
-}
-
-export interface BankSummary{
-
-bankName:string;
-
-transactions:number;
-
-matched:number;
-
-exceptions:number;
-
-}
-
-export interface ExceptionChart{
-
-date:string;
-
-count:number;
-
-}
-
-export const DashboardService={
-
-summary:async()=>(
 await api.get<DashboardSummary>(
+
 "/dashboard/summary"
-)).data,
 
-runs:async()=>(
-await api.get<ReconciliationRun[]>(
+);
+
+return response.data;
+
+},
+
+async runs():Promise<RecentRun[]>{
+
+const response=
+
+await api.get<RecentRun[]>(
+
 "/dashboard/reconciliation-runs"
-)).data,
 
-banks:async()=>(
+);
+
+return response.data;
+
+},
+
+async banks():Promise<BankSummary[]>{
+
+const response=
+
 await api.get<BankSummary[]>(
-"/dashboard/bank-summary"
-)).data,
 
-exceptions:async()=>(
-await api.get<ExceptionChart[]>(
+"/dashboard/bank-summary"
+
+);
+
+return response.data;
+
+},
+
+async exceptionChart():Promise<ExceptionChart>{
+
+const response=
+
+await api.get<ExceptionChart>(
+
 "/dashboard/exception-chart"
-)).data
+
+);
+
+return response.data;
+
+}
 
 };
+
+export default DashboardService;

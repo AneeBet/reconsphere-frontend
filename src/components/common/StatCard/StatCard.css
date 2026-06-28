@@ -1,3 +1,13 @@
+.statHeader{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+}
+
 .statTitle{
 
 font-size:14px;
@@ -15,5 +25,13 @@ font-size:34px;
 font-weight:700;
 
 color:#0F172A;
+
+}
+
+.statIcon{
+
+font-size:34px;
+
+color:#2563EB;
 
 }

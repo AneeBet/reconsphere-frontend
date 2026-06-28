@@ -1,71 +1,142 @@
-import{
+import {
 
-BrowserRouter,
+    BrowserRouter,
 
-Routes,
+    Routes,
 
-Route
+    Route
 
-}from"react-router-dom";
+} from "react-router-dom";
 
-import MainLayout from"./layouts/MainLayout";
+import MainLayout from "./layouts/MainLayout";
 
-import ProtectedRoute from"./routes/ProtectedRoute";
+import Settings from "./pages/settings/Settings";
 
-import Login from"./pages/auth/Login";
+import AICopilot from "./pages/ai/AICopilot";
 
-function Dashboard(){
+import Audit from "./pages/audit/Audit";
 
-return<h1>Dashboard</h1>;
+import Cases from "./pages/cases/Cases";
 
-}
+import Exceptions from "./pages/exceptions/Exceptions";
 
-export default function App(){
+import Reconciliation from "./pages/reconciliation/Reconciliation";
 
-return(
+import Transactions from "./pages/transactions/Transactions";
 
-<BrowserRouter>
+import ProtectedRoute from "./routes/ProtectedRoute";
 
-<Routes>
+import Login from "./pages/auth/Login";
 
-<Route
+import Dashboard from "./pages/dashboard/Dashboard";
 
-path="/login"
+import Files from "./pages/files/Files";
 
-element={<Login/>}
+import Reports from "./pages/reports/Reports";
 
-/>
+export default function App() {
 
-<Route
+    return (
 
-path="/"
+        <BrowserRouter>
 
-element={
+            <Routes>
 
-<ProtectedRoute>
+                <Route
 
-<MainLayout/>
+                    path="/login"
 
-</ProtectedRoute>
+                    element={<Login />}
 
-}
+                />
 
->
+                <Route
 
-<Route
+                    path="/"
 
-index
+                    element={
 
-element={<Dashboard/>}
+                        <ProtectedRoute>
 
-/>
+                            <MainLayout />
 
-</Route>
+                        </ProtectedRoute>
 
-</Routes>
+                    }
 
-</BrowserRouter>
+                >
 
-);
+                    <Route
+
+                        index
+
+                        element={<Dashboard />}
+
+                    />
+
+                    <Route
+                        path="files"
+                        element={<Files />}
+                    />
+
+                    <Route
+
+                    path="transactions"
+
+                    element={<Transactions/>}
+
+                    />
+
+                    <Route
+
+                    path="reconciliation"
+
+                    element={<Reconciliation/>}
+
+                    />
+
+                    <Route
+
+                    path="exceptions"
+
+                    element={<Exceptions/>}
+
+                    />
+
+                    <Route
+                        path="cases"
+                        element={<Cases/>}
+                    />
+
+                    <Route
+
+                    path="ai"
+
+                    element={<AICopilot/>}
+
+                    />
+
+                    <Route
+                        path="reports"
+                        element={<Reports/>}
+                    />
+
+                    <Route
+                        path="audit"
+                        element={<Audit/>}
+                    />
+
+                    <Route
+                        path="settings"
+                        element={<Settings/>}
+                    />
+
+                </Route>
+
+            </Routes>
+
+        </BrowserRouter>
+
+    );
 
 }

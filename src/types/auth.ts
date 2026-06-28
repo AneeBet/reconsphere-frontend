@@ -1,33 +1,33 @@
 export interface LoginRequest{
 
-email:string;
+    email:string;
 
-password:string;
+    password:string;
 
 }
 
 export interface LoginResponse{
 
-access_token:string;
+    access_token:string;
 
-refresh_token:string;
+    refresh_token:string;
 
-token_type:string;
+    token_type:string;
 
 }
 
 export interface CurrentUser{
 
-id:string;
+    id:string;
 
-first_name:string;
+    first_name:string;
 
-last_name:string;
+    last_name:string;
 
-email:string;
+    email:string;
 
-role:"ADMIN"|"OPS"|"AUDITOR"|"VIEWER";
+    role:"ADMIN"|"OPS"|"AUDITOR"|"VIEWER";
 
-organization_id:string;
+    organization_id:string;
 
 }

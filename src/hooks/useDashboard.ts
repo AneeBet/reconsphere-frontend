@@ -1,10 +1,16 @@
-import {useQuery} from "@tanstack/react-query";
+import{
 
-import {DashboardService} from "../services/dashboardService";
+useQuery
+
+}from"@tanstack/react-query";
+
+import DashboardService from "../services/dashboardService";
 
 export function useDashboard(){
 
-const summary=useQuery({
+const summary=
+
+useQuery({
 
 queryKey:["dashboard-summary"],
 
@@ -12,7 +18,9 @@ queryFn:DashboardService.summary
 
 });
 
-const runs=useQuery({
+const runs=
+
+useQuery({
 
 queryKey:["dashboard-runs"],
 
@@ -20,7 +28,9 @@ queryFn:DashboardService.runs
 
 });
 
-const banks=useQuery({
+const banks=
+
+useQuery({
 
 queryKey:["dashboard-banks"],
 
@@ -28,11 +38,13 @@ queryFn:DashboardService.banks
 
 });
 
-const exceptions=useQuery({
+const chart=
 
-queryKey:["dashboard-exceptions"],
+useQuery({
 
-queryFn:DashboardService.exceptions
+queryKey:["dashboard-chart"],
+
+queryFn:DashboardService.exceptionChart
 
 });
 
@@ -44,7 +56,7 @@ runs,
 
 banks,
 
-exceptions
+chart
 
 };
 

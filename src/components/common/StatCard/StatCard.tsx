@@ -2,25 +2,35 @@ import "./StatCard.css";
 
 import Card from "../Card/Card";
 
-type Props={
+import type { ReactNode } from "react";
+
+interface Props{
 
 title:string;
 
 value:string|number;
 
-};
+icon?:ReactNode;
+
+}
 
 export default function StatCard({
 
 title,
 
-value
+value,
+
+icon
 
 }:Props){
 
 return(
 
 <Card>
+
+<div className="statHeader">
+
+<div>
 
 <div className="statTitle">
 
@@ -31,6 +41,16 @@ return(
 <div className="statValue">
 
 {value}
+
+</div>
+
+</div>
+
+<div className="statIcon">
+
+{icon}
+
+</div>
 
 </div>
 

@@ -1,239 +1,299 @@
 import "./Dashboard.css";
 
 import {
+    MdSync,
+    MdWarning,
+    MdAccountBalance,
+    MdPlayArrow,
+} from "react-icons/md";
 
-PageContainer,
-
-SectionHeader,
-
-StatCard,
-
-Card,
-
-Loader,
-
-EmptyState
-
+import {
+    Card,
+    Loader,
+    EmptyState,
+    PageContainer,
+    SectionHeader,
+    StatCard,
 } from "../../components/common";
 
-import {useDashboard} from "../../hooks/useDashboard";
+import ExceptionPieChart from "../../components/charts/ExceptionPieChart";
 
-export default function Dashboard(){
+import { useDashboard } from "../../hooks/useDashboard";
 
-const{
+export default function Dashboard() {
 
-summary,
+    const {
+        summary,
+        runs,
+        banks,
+        chart,
+    } = useDashboard();
 
-runs,
+    const loading =
+        summary.isLoading ||
+        runs.isLoading ||
+        banks.isLoading ||
+        chart.isLoading;
 
-banks,
+    if (loading) {
+        return <Loader />;
+    }
 
-exceptions
+    if (
+        summary.isError ||
+        runs.isError ||
+        banks.isError ||
+        chart.isError
+    ) {
+        return (
+            <EmptyState
+                title="Unable to load dashboard"
+                message="Unable to load dashboard data."
+            />
+        );
+    }
 
-}=useDashboard();
+    return (
 
-if(
+        <PageContainer>
 
-summary.isLoading||
+            <SectionHeader
+                title="Dashboard"
+                subtitle="Enterprise Payment Reconciliation Overview"
+            />
 
-runs.isLoading||
+            <div className="statsGrid">
 
-banks.isLoading||
+                <StatCard
+                    title="Transactions"
+                    value={summary.data?.total_transactions ?? 0}
+                    icon={<MdSync />}
+                />
 
-exceptions.isLoading
+                <StatCard
+                    title="Exceptions"
+                    value={summary.data?.exceptions ?? 0}
+                    icon={<MdWarning />}
+                />
 
-){
+                <StatCard
+                    title="Banks"
+                    value={summary.data?.banks ?? 0}
+                    icon={<MdAccountBalance />}
+                />
 
-return<Loader/>;
+                <StatCard
+                    title="Runs"
+                    value={summary.data?.runs ?? 0}
+                    icon={<MdPlayArrow />}
+                />
 
-}
+            </div>
 
-if(
+            <div className="dashboardGrid">
 
-summary.isError
+                <Card>
 
-){
+                    <h3>Recent Reconciliation Runs</h3>
 
-return(
+                    <table className="dashboardTable">
 
-<EmptyState
+                        <thead>
 
-title="Dashboard unavailable"
+                            <tr>
 
-message="Unable to load dashboard."
+                                <th>Run Id</th>
 
-/>
+                                <th>Status</th>
 
-);
+                                <th>Started</th>
 
-}
+                            </tr>
 
-return(
+                        </thead>
 
-<PageContainer>
+                        <tbody>
 
-<SectionHeader
+                            {
 
-title="Dashboard"
+                                runs.data?.length ? (
 
-subtitle="Real-time reconciliation overview."
+                                    runs.data.map(run => (
 
-/>
+                                        <tr key={run.id}>
 
-<div className="stats">
+                                            <td>
 
-<StatCard
+                                                {run.id.slice(0, 8)}
 
-title="Files"
+                                            </td>
 
-value={summary.data?.totalFiles??0}
+                                            <td>
 
-/>
+                                                {run.status}
 
-<StatCard
+                                            </td>
 
-title="Transactions"
+                                            <td>
 
-value={summary.data?.totalTransactions??0}
+                                                {
 
-/>
+                                                    new Date(
 
-<StatCard
+                                                        run.started_at
 
-title="Matched"
+                                                    ).toLocaleString()
 
-value={summary.data?.matchedTransactions??0}
+                                                }
 
-/>
+                                            </td>
 
-<StatCard
+                                        </tr>
 
-title="Exceptions"
+                                    ))
 
-value={summary.data?.exceptionTransactions??0}
+                                ) : (
 
-/>
+                                    <tr>
 
-</div>
+                                        <td colSpan={3}>
 
-<div className="grid2">
+                                            No reconciliation runs available.
 
-<Card>
+                                        </td>
 
-<h3>
+                                    </tr>
 
-Recent Reconciliation Runs
+                                )
 
-</h3>
+                            }
 
-<table className="dashboardTable">
+                        </tbody>
 
-<thead>
+                    </table>
 
-<tr>
+                </Card>
 
-<th>Status</th>
+                <Card>
 
-<th>Matched</th>
+                    <h3>Connected Banks</h3>
 
-<th>Exceptions</th>
+                    <table className="dashboardTable">
 
-</tr>
+                        <thead>
 
-</thead>
+                            <tr>
 
-<tbody>
+                                <th>Bank</th>
 
-{
+                            </tr>
 
-runs.data?.map(run=>(
+                        </thead>
 
-<tr key={run.id}>
+                        <tbody>
 
-<td>{run.status}</td>
+                            {
 
-<td>{run.matched}</td>
+                                banks.data?.length ? (
 
-<td>{run.exceptions}</td>
+                                    banks.data.map(bank => (
 
-</tr>
+                                        <tr key={bank.id}>
 
-))
+                                            <td>
 
-}
+                                                {bank.bank_name}
 
-</tbody>
+                                            </td>
 
-</table>
+                                        </tr>
 
-</Card>
+                                    ))
 
-<Card>
+                                ) : (
 
-<h3>
+                                    <tr>
 
-Banks
+                                        <td>
 
-</h3>
+                                            No banks configured.
 
-<table className="dashboardTable">
+                                        </td>
 
-<thead>
+                                    </tr>
 
-<tr>
+                                )
 
-<th>Bank</th>
+                            }
 
-<th>Transactions</th>
+                        </tbody>
 
-</tr>
+                    </table>
 
-</thead>
+                </Card>
 
-<tbody>
+            </div>
 
-{
+            <div className="dashboardGrid">
 
-banks.data?.map(bank=>(
+                <Card>
 
-<tr key={bank.bankName}>
+                    <h3>
 
-<td>{bank.bankName}</td>
+                        Exception Severity
 
-<td>{bank.transactions}</td>
+                    </h3>
 
-</tr>
+                    {
 
-))
+                        chart.data &&
 
-}
+                        <ExceptionPieChart
 
-</tbody>
+                            data={chart.data}
 
-</table>
+                        />
 
-</Card>
+                    }
 
-</div>
+                </Card>
 
-<Card>
+                <Card>
 
-<h3>
+                    <h3>
 
-Exception Trend
+                        Quick Actions
 
-</h3>
+                    </h3>
 
-<p>
+                    <div className="quickActions">
 
-Chart integration (Recharts) will be added in the next script.
+                        <button>
 
-</p>
+                            Upload Payment File
 
-</Card>
+                        </button>
 
-</PageContainer>
+                        <button>
 
-);
+                            Start Reconciliation
+
+                        </button>
+
+                        <button>
+
+                            Review Exceptions
+
+                        </button>
+
+                    </div>
+
+                </Card>
+
+            </div>
+
+        </PageContainer>
+
+    );
 
 }

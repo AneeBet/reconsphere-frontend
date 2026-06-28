@@ -1,49 +1,41 @@
 export interface DashboardSummary{
 
-totalFiles:number;
+    total_transactions:number;
 
-totalTransactions:number;
+    exceptions:number;
 
-matchedTransactions:number;
+    banks:number;
 
-exceptionTransactions:number;
+    runs:number;
 
-matchingRate:number;
+}
+
+export interface RecentRun{
+
+    id:string;
+
+    started_at:string;
+
+    status:string;
 
 }
 
 export interface BankSummary{
 
-bankName:string;
+    id:string;
 
-transactions:number;
-
-matched:number;
-
-exceptions:number;
-
-}
-
-export interface ReconciliationRun{
-
-id:string;
-
-status:string;
-
-matched:number;
-
-exceptions:number;
-
-startedAt:string;
-
-completedAt:string;
+    bank_name:string;
 
 }
 
 export interface ExceptionChart{
 
-date:string;
+    critical:number;
 
-count:number;
+    high:number;
+
+    medium:number;
+
+    low:number;
 
 }

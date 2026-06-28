@@ -1,6 +1,6 @@
 import "./Card.css";
 
-import {ReactNode} from "react";
+import type {ReactNode} from "react";
 
 export default function Card({
 
